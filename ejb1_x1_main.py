@@ -48,31 +48,89 @@ el valor pasado como filtro y la oración tiene una longitud de la cadena de tex
 from util_package import text_manager 
 from util_package.text_manager import TEXT, is_newline, is_space, remove_punctuation_marks
 
+
+def find_words(text):
+    i = 0
+    start_word = 0
+    new_text = remove_punctuation_marks(text)
+    words = []
+    while i < len(new_text):
+        if is_space(new_text[i]) or is_newline(new_text[i]):
+            if start_word < i:
+                words.append(new_text[start_word:i])
+            start_word = i + 1
+        i += 1
+    if start_word < len(new_text):
+        words.append(new_text[start_word:])
+    return words
+
+
 def find_largest_word(text):
     # Write here your code
-    pass                
+    words = find_words(text)
+    candidate = ""
+    for word in words:
+        if  len(word) > len(candidate):
+            candidate = word
+    return candidate
+
 
 def is_palindrome_word(word):
     # Write here your code
-    pass
+    word = word.lower()
+    if len(word) <= 1:
+        return True
+
+    if word[0] != word[-1]:
+        return False
+    return is_palindrome_word(word[1:-1])
     
 
 
 def count_palindrome_words(text):
     # Write here your code
-    pass
+    words = find_words(text)
+    count = 0
+    for word in words:
+        if is_palindrome_word(word):
+            count += 1
+    return count
+    
 
+def separate_sentence(text):
+    i = 0
+    start_sentence = 0
+    sentences = []
+    while i < len(text):
+        if is_newline(text[i]):
+            end_sentence = i
+            sentences.append(text[start_sentence:end_sentence])
+            start_sentence = i + 1
+        i += 1
+    if start_sentence < len(text):
+        sentences.append(text[start_sentence:])
+    return sentences
+    
 
 def find_size_largest_sentence(text, filter):
     # Write here your code
-    pass
+    if not filter in text:
+        raise ValueError("No hay coincidendias")
+    sentences = separate_sentence(text)
+    candidate = ''
+    for sentence in sentences:
+        if filter in sentence:
+            if len(sentence) > len(candidate):
+                candidate = sentence
+    return len(candidate)
+
 
 
 # Si quieres probar tu código, descomenta las siguientes líneas y ejecuta el script
-#print("La palabra mas larga es:", find_largest_word(TEXT))
-#print("'aa' es un palíndromo su resultado es:", is_palindrome_word("aa"))
-#print("'abx' no un palíndromo su resultado es:", is_palindrome_word("abx"))
-#print("'a' es un palíndromo su resultado es:", is_palindrome_word("a"))
-#print("'Ababa' es palíndromo su resultado es:", is_palindrome_word("Ababa"))
-#print("El número de palabras identificadas como palíndromos es:", count_palindrome_words(TEXT))
-#print("El tamaño de la oración más larga con el filtro='a', es :", find_size_largest_sentence(TEXT, "melon"))
+# print("La palabra mas larga es:", find_largest_word(TEXT))
+# print("'aa' es un palíndromo su resultado es:", is_palindrome_word("aa"))
+# print("'abx' no un palíndromo su resultado es:", is_palindrome_word("abx"))
+# print("'a' es un palíndromo su resultado es:", is_palindrome_word("a"))
+# print("'Ababa' es palíndromo su resultado es:", is_palindrome_word("Ababa"))
+# print("El número de palabras identificadas como palíndromos es:", count_palindrome_words(TEXT))
+# print("El tamaño de la oración más larga con el filtro='a', es :", find_size_largest_sentence(TEXT, "melon"))
